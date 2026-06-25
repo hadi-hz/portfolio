@@ -22,7 +22,7 @@ class AppColors {
   // Text
   static const textPrimary = Color(0xFFE8E8F8);
   static const textMuted   = Color(0xFF7272A0);
-  static const textDim     = Color(0xFF3A3A5C);
+  static const textDim     = Color(0xFFAAABBF );
 
   // Borders
   static const border      = Color(0x3D7C3AED);

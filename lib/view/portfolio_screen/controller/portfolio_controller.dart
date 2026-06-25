@@ -29,6 +29,44 @@ class PortfolioController extends GetxController {
 
   void _onScroll() {
     isNavScrolled.value = scrollController.offset > 60;
+    _checkVisibility(aboutKey,      aboutVisible);
+    _checkVisibility(skillsKey,     skillsVisible);
+    _checkVisibility(projectsKey,   projectsVisible);
+    _checkVisibility(experienceKey, experienceVisible);
+    _checkVisibility(contactKey,    contactVisible);
+  }
+
+  /// Marks [obs] true when the widget attached to [key] enters the viewport.
+  /// Uses a 15% threshold — section needs to be at least 15% visible.
+  void _checkVisibility(GlobalKey key, RxBool obs) {
+    if (obs.value) return; // once visible, stays visible
+
+    final ctx = key.currentContext;
+    if (ctx == null) return;
+
+    final box = ctx.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return;
+
+    final viewportHeight =
+        scrollController.position.viewportDimension;
+    final scrollOffset = scrollController.offset;
+
+    // position of the widget's top edge in scroll coordinates
+    final widgetTop =
+        box.localToGlobal(Offset.zero, ancestor: null).dy +
+            scrollOffset -
+            MediaQuery.of(ctx).padding.top;
+
+    final widgetHeight = box.size.height;
+    final threshold    = widgetHeight * 0.15;
+
+    final visibleTop    = scrollOffset;
+    final visibleBottom = scrollOffset + viewportHeight;
+
+    if (widgetTop + threshold < visibleBottom &&
+        widgetTop + widgetHeight > visibleTop) {
+      obs.value = true;
+    }
   }
 
   void scrollToSection(GlobalKey key) {
